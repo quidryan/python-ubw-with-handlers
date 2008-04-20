@@ -3,4 +3,5 @@ http://code.google.com/p/python-ubw/
 
 Python interface to the UBW (USB Bit Wacker) - http://greta.dhs.org/UBW/
 
-
+Requires pyserial:
+http://pyserial.sourceforge.net/
