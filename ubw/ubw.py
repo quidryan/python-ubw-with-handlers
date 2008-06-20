@@ -321,16 +321,13 @@ class Ubw(object):
 
     self.Reset()
     self.ConfigureUbw(send_ok=False)
-    self.Version()
-    if ((self.version_letter, self.version_major, self.version_minor)
-        != (1, 4)):
-      raise VersionMismatch(self.version_letter, self.version_major,
-                            self.version_minor, self.version_sub)
 
     # Start Input Handling
     self.running = True
     self.thread = threading.Thread(target=self.InputLoop)
     self.thread.start()
+
+    self.Version()
 
   def __del__(self):
     self.running = False
@@ -351,7 +348,7 @@ class Ubw(object):
     for port_name in self.ports:
       for pin_num, pin in enumerate(self[port_name]):
         if pin.rc != 0:
-          self.ServoOutput(port_name, pin_num)
+          self.ServoOutput(port_name, pin_num, 0)
 
   def RegisterExceptionCallback(self, exception, callback):
     """Register a callback to be called when a particular exception is handled.
