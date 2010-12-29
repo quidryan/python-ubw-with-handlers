@@ -290,13 +290,13 @@ class Ubw(object):
     self.memory_read_queue = Queue.Queue()
     self.memory_ready_queue = Queue.Queue()
 
-    self.responses = ((INPUT_STATE, self.HandleInputState),
+    self.responses = [(INPUT_STATE, self.HandleInputState),
                  (ANALOG_STATE, self.HandleAnalogState),
                  (MEMORY_READ, self.HandleMemoryRead),
                  (PIN_INPUT, self.HandlePinInput),
                  (ERROR, self.HandleError),
                  (VERSION, self.HandleVersion),
-                 (OK, self.HandleOk))
+                 (OK, self.HandleOk)]
     if interface is not None:
       self.interface = serial.Serial(interface)
     else:
@@ -387,13 +387,16 @@ class Ubw(object):
     Args:
       response: string response line sent by the UBW
     """
+    handled = False
     for matcher, method in self.responses:
       match = matcher.search(response)
       if match is not None:
         method(match.groupdict())
-        return
-    # TODO: raise exception
-    print 'Unhandled Response', response
+        #return
+        handled = True
+    if not handled:
+      # TODO: raise exception
+      print 'Unhandled Response', response.strip()
 
   def InputLoop(self):
     """Main loop for checking for pending input and dispatching it."""
